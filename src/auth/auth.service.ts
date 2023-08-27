@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -14,13 +18,20 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  private handleErrors(error: any): never {
+    console.log(error);
+    if (error['code'] === '23505')
+      throw new BadRequestException(error['detail']);
+    throw new InternalServerErrorException('Check server logs');
+  }
+
   async create(createAuthDto: CreateUserDto) {
     try {
       const user = this.userRepository.create(createAuthDto);
       await this.userRepository.save(user);
       return user;
     } catch (error) {
-      console.log(error);
+      this.handleErrors(error);
     }
   }
 

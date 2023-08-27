@@ -20,6 +20,8 @@ export class User {
   @Column('numeric')
   experience: EXPERIENCE;
 
-  @Column('text')
+  @Column('text', {
+    nullable: true,
+  })
   phone: string;
 }
