@@ -1,11 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async create(createAuthDto: CreateUserDto) {
+    try {
+      const user = this.userRepository.create(createAuthDto);
+      await this.userRepository.save(user);
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   findAll() {
@@ -16,7 +32,7 @@ export class AuthService {
     return `This action returns a #${id} auth`;
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
+  update(id: number, updateAuthDto: UpdateUserDto) {
     return `This action updates a #${id} auth`;
   }
 
