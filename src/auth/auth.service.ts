@@ -6,10 +6,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
+import { hashSync } from 'bcrypt';
 
+import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,9 +29,22 @@ export class AuthService {
 
   async create(createAuthDto: CreateUserDto) {
     try {
-      const user = this.userRepository.create(createAuthDto);
+      const { password, ...userData } = createAuthDto;
+      const user = this.userRepository.create({
+        ...userData,
+        password: hashSync(password, 10),
+      });
       await this.userRepository.save(user);
-      return user;
+      return {
+        token: 'sdf5545dfd454',
+      };
+    } catch (error) {
+      this.handleErrors(error);
+    }
+  }
+
+  async login(userAuthDto: LoginUserDto) {
+    try {
     } catch (error) {
       this.handleErrors(error);
     }
