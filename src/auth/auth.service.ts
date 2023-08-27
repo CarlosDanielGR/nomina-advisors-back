@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 import { Repository } from 'typeorm';
 import { compareSync, hashSync } from 'bcrypt';
@@ -13,6 +14,9 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+
+const TOKEN =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +32,10 @@ export class AuthService {
     throw new InternalServerErrorException('Check server logs');
   }
 
+  // private getJwt(payload: JwtPayload) {
+  //   return this.jwtService.sign(payload);
+  // }
+
   async create(createAuthDto: CreateUserDto) {
     try {
       const { password, ...userData } = createAuthDto;
@@ -37,7 +45,7 @@ export class AuthService {
       });
       await this.userRepository.save(user);
       return {
-        token: 'sdf5545dfd454',
+        token: TOKEN,
       };
     } catch (error) {
       this.handleErrors(error);
@@ -57,7 +65,7 @@ export class AuthService {
     if (!compareSync(password, user.password))
       throw new UnauthorizedException('Invalid credentials');
     return {
-      token: 'sdfsd55454',
+      token: TOKEN,
     };
   }
 
