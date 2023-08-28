@@ -22,6 +22,6 @@ import { ConfigModule } from '@nestjs/config';
       },
     }),
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, AuthService],
 })
 export class AuthModule {}

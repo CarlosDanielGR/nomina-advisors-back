@@ -19,7 +19,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 export class AuthService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    readonly userRepository: Repository<User>,
   ) {}
 
   private handleErrors(error: any): never {
