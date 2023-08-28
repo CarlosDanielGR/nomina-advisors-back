@@ -67,8 +67,8 @@ export class AuthService {
     };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async findAll() {
+    return await this.userRepository.find();
   }
 
   async findUser(id: string) {

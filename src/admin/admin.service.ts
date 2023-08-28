@@ -10,6 +10,7 @@ export class AdminService {
     user.forEach((users) => {
       const otherService = users.nomina * 0.0875;
       users.total = users.nomina - otherService;
+      console.log(users.sales);
     });
     return user;
   }
