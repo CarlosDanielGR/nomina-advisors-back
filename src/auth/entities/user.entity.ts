@@ -26,4 +26,14 @@ export class User {
     nullable: true,
   })
   phone: string;
+
+  @Column('numeric', {
+    default: 0,
+  })
+  nomina: number;
+
+  @Column('numeric', {
+    default: 0,
+  })
+  total: number;
 }

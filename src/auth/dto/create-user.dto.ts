@@ -18,4 +18,7 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   phone: string;
+
+  @IsNumber()
+  nomina: number;
 }
