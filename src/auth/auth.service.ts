@@ -3,9 +3,9 @@ import {
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
 
 import { Repository } from 'typeorm';
 import { compareSync, hashSync } from 'bcrypt';
@@ -14,9 +14,6 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-
-const TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
 @Injectable()
 export class AuthService {
@@ -45,7 +42,7 @@ export class AuthService {
       });
       await this.userRepository.save(user);
       return {
-        token: TOKEN,
+        token: user.id,
       };
     } catch (error) {
       this.handleErrors(error);
@@ -59,13 +56,14 @@ export class AuthService {
       select: {
         email: true,
         password: true,
+        id: true,
       },
     });
     if (!user) throw new UnauthorizedException('Invalid credentials');
     if (!compareSync(password, user.password))
       throw new UnauthorizedException('Invalid credentials');
     return {
-      token: TOKEN,
+      token: user.id,
     };
   }
 
@@ -73,15 +71,31 @@ export class AuthService {
     return `This action returns all auth`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async findUser(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    return user;
   }
 
-  update(id: number, updateAuthDto: UpdateUserDto) {
-    return `This action updates a #${id} auth`;
+  async updateUser(id: string, updateAuthDto: UpdateUserDto) {
+    const preUser = await this.findUser(id);
+    if (!preUser)
+      throw new NotFoundException(`Product with id:${id} not found`);
+    console.log(id, updateAuthDto);
+
+    try {
+      const user = await this.userRepository.save({
+        ...preUser,
+        ...updateAuthDto,
+      });
+      return user;
+    } catch (error) {
+      this.handleErrors(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async removeDataUser(id: string) {
+    const user = await this.findUser(id);
+    user.phone = '';
+    return await this.userRepository.save(user);
   }
 }
