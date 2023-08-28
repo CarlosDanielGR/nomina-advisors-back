@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -26,23 +27,24 @@ export class AuthController {
     return this.authService.login(userAuthDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Get('profile')
+  findUser(@Query() params: { id: string }) {
+    const { id } = params;
+    return this.authService.findUser(id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  @Patch('profile')
+  updateUser(
+    @Query() params: { id: string },
+    @Body() updateAuthDto: UpdateUserDto,
+  ) {
+    const { id } = params;
+    return this.authService.updateUser(id, updateAuthDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateUserDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @Delete('profile')
+  removeDataUser(@Query() params: { id: string }) {
+    const { id } = params;
+    return this.authService.removeDataUser(id);
   }
 }

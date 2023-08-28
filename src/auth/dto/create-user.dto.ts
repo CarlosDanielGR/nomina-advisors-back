@@ -7,7 +7,6 @@ export class CreateUserDto {
   email: string;
 
   @IsString()
-  @IsOptional()
   name: string;
 
   @IsString()
@@ -15,4 +14,8 @@ export class CreateUserDto {
 
   @IsNumber()
   experience: EXPERIENCE;
+
+  @IsString()
+  @IsOptional()
+  phone: string;
 }
