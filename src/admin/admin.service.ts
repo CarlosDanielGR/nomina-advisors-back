@@ -6,11 +6,18 @@ export class AdminService {
   constructor(private readonly authService: AuthService) {}
 
   async findAllNomina() {
-    const user = await this.authService.userRepository.find();
+    const user = await this.authService.userRepository.find({
+      relations: ['sales'],
+    });
     user.forEach((users) => {
       const otherService = users.nomina * 0.0875;
-      users.total = users.nomina - otherService;
-      console.log(users.sales);
+      const nomina = users.nomina - otherService;
+      users.total =
+        users.sales
+          .map((sale) => sale.price)
+          .reduce((sum, num) => {
+            return +sum + +num;
+          }, 0) + nomina;
     });
     return user;
   }
