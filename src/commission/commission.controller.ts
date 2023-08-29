@@ -38,8 +38,8 @@ export class CommissionController {
     return this.commissionService.update(+id, updateCommissionDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commissionService.remove(+id);
+  @Delete()
+  remove(@Body() targets: number[]) {
+    return this.commissionService.remove(targets);
   }
 }

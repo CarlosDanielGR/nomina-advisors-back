@@ -46,7 +46,17 @@ export class CommissionService {
     return `This action updates a #${id} commission`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} commission`;
+  async remove(targets: number[]) {
+    const removePromise = [];
+    targets.forEach(async (target) => {
+      const commission = await this.commissionRepository.findBy({
+        target: target,
+      });
+      removePromise.push(this.commissionRepository.remove(commission));
+    });
+    await Promise.all(removePromise);
+    return {
+      message: 'Remove completed',
+    };
   }
 }
