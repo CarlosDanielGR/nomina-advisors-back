@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { EXPERIENCE } from 'src/constant/experience.constant';
+import { Sale } from 'src/sales/entities/sale.entity';
 
 @Entity('users')
 export class User {
@@ -36,4 +37,7 @@ export class User {
     default: 0,
   })
   total: number;
+
+  @OneToMany(() => Sale, (sale) => sale.user, { cascade: true })
+  sales?: Sale[];
 }

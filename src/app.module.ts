@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
+import { SalesModule } from './sales/sales.module';
 
 const { env } = process;
 
@@ -24,6 +25,7 @@ const { env } = process;
     }),
     AuthModule,
     AdminModule,
+    SalesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

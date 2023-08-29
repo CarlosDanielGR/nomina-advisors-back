@@ -27,6 +27,11 @@ export class AuthController {
     return this.authService.login(userAuthDto);
   }
 
+  @Get('users')
+  findAll() {
+    return this.authService.findAll();
+  }
+
   @Get('profile')
   findUser(@Query() params: { id: string }) {
     const { id } = params;
