@@ -39,7 +39,7 @@ export class CommissionController {
   }
 
   @Delete()
-  remove(@Body() targets: number[]) {
-    return this.commissionService.remove(targets);
+  remove() {
+    return this.commissionService.remove();
   }
 }
