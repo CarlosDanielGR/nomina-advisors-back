@@ -16,7 +16,7 @@ export class CommissionController {
   constructor(private readonly commissionService: CommissionService) {}
 
   @Post()
-  create(@Body() createCommissionDto: CreateCommissionDto) {
+  create(@Body() createCommissionDto: CreateCommissionDto[]) {
     return this.commissionService.create(createCommissionDto);
   }
 

@@ -5,9 +5,9 @@ export class CreateCommissionDto {
   @IsNumber()
   profit: number;
 
-  @IsNumber()
-  condition: number;
-
   @IsEnum(EXPERIENCE)
   experience: EXPERIENCE;
+
+  @IsNumber()
+  target: number;
 }

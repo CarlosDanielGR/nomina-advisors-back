@@ -9,8 +9,8 @@ export class Commission {
   profit: number;
 
   @Column('numeric')
-  condition: number;
+  experience: number;
 
   @Column('numeric')
-  experience: number;
+  target: number;
 }

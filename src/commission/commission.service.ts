@@ -8,14 +8,12 @@ import { UpdateCommissionDto } from './dto/update-commission.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Commission } from './entities/commission.entity';
 import { Repository } from 'typeorm';
-import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class CommissionService {
   constructor(
     @InjectRepository(Commission)
     private readonly commissionRepository: Repository<Commission>,
-    private readonly authService: AuthService,
   ) {}
 
   private handleErrors(error: any): never {
@@ -25,9 +23,11 @@ export class CommissionService {
     throw new InternalServerErrorException('Check server logs');
   }
 
-  async create(createCommissionDto: CreateCommissionDto) {
+  async create(createCommissionDto: CreateCommissionDto[]) {
     try {
-      const commission = this.commissionRepository.create(createCommissionDto);
+      const commission = this.commissionRepository.create([
+        ...createCommissionDto,
+      ]);
       return await this.commissionRepository.save(commission);
     } catch (error) {
       this.handleErrors(error);
@@ -35,7 +35,7 @@ export class CommissionService {
   }
 
   findAll() {
-    return `This action returns all commission`;
+    return this.commissionRepository.find();
   }
 
   findOne(id: number) {
