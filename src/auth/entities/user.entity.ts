@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
 import { EXPERIENCE } from 'src/constant/experience.constant';
 import { Sale } from 'src/sales/entities/sale.entity';
 
