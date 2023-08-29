@@ -38,12 +38,21 @@ export class CommissionService {
     return this.commissionRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} commission`;
-  }
-
-  update(id: number, updateCommissionDto: UpdateCommissionDto) {
-    return `This action updates a #${id} commission`;
+  async update(updateCommissionDto: UpdateCommissionDto[]) {
+    const updatePromise = [];
+    updateCommissionDto.forEach(async (commission) => {
+      const commissionData = await this.commissionRepository.findOneBy({
+        target: commission.target,
+        experience: commission.experience,
+      });
+      updatePromise.push(
+        this.commissionRepository.save({ ...commissionData, ...commission }),
+      );
+    });
+    await Promise.all(updatePromise);
+    return {
+      message: 'Update completed',
+    };
   }
 
   async remove() {
