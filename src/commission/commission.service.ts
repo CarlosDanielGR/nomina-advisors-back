@@ -35,7 +35,11 @@ export class CommissionService {
   }
 
   findAll() {
-    return this.commissionRepository.find();
+    return this.commissionRepository.find({
+      order: {
+        experience: 'ASC',
+      },
+    });
   }
 
   async update(updateCommissionDto: UpdateCommissionDto[]) {
