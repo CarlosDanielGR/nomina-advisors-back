@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+
 import { AuthService } from 'src/auth/auth.service';
+import { User } from 'src/auth/entities/user.entity';
 import { CommissionService } from 'src/commission/commission.service';
 
 const TARGETS = {
@@ -16,12 +18,20 @@ export class AdminService {
   ) {}
 
   async findAllNomina() {
-    const user = await this.authService.userRepository.find({
+    const user: (User & {
+      profit?: number;
+      health?: number;
+      occupational?: number;
+      boarding?: number;
+    })[] = await this.authService.userRepository.find({
       relations: ['sales'],
     });
     const commission = await this.commissionService.findAll();
 
     user.forEach((users) => {
+      users.health = users.nomina * 0.04;
+      users.occupational = users.nomina * 0.0074;
+      users.boarding = users.nomina * 0.04;
       const otherService = users.nomina * 0.0875;
       const nomina = users.nomina - otherService;
       const sales = users.sales
@@ -30,17 +40,23 @@ export class AdminService {
           return +sum + +num;
         }, 0);
       const profit = commission.map((comm) => comm.profit);
-
       users.total = nomina;
 
       const experience = +users.experience;
       if (!profit.length) return;
-      if (sales >= (40 / 100) * TARGETS[experience] + TARGETS[experience])
+      if (sales >= (40 / 100) * TARGETS[experience] + TARGETS[experience]) {
         users.total += (profit[experience - 1] / 100) * TARGETS[experience];
-      else if (sales >= (20 / 100) * TARGETS[experience] + TARGETS[experience])
+        users.profit = (profit[experience - 1] / 100) * TARGETS[experience];
+      } else if (
+        sales >=
+        (20 / 100) * TARGETS[experience] + TARGETS[experience]
+      ) {
         users.total += (profit[experience - 1] / 100) * TARGETS[experience];
-      else if (sales >= TARGETS[experience])
+        users.profit = (profit[experience - 1] / 100) * TARGETS[experience];
+      } else if (sales >= TARGETS[experience]) {
         users.total += (profit[experience - 1] / 100) * TARGETS[experience];
+        users.profit = (profit[experience - 1] / 100) * TARGETS[experience];
+      }
     });
     return user;
   }
